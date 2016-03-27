@@ -1,22 +1,53 @@
-var ObservedRemoveSet = function(ident, emitter) {
+var ObservedRemoveSet = function(ident) {
   this._ident = ident;
-  this._emitter = emitter;
   this._counter = 0;
 
   this._versions = {};
-  this.values = [];
+  this._values = [];
+};
+
+ObservedRemoveSet.prototype.getState = function () {
+  var versions = this._versions;
+  return Object.keys(this._versions).map(function (key) {
+    var versionData = versions[key];
+    return {
+      v: versionData.val,
+      a: Object.keys(versionData.added),
+      r: Object.keys(versionData.removed)
+    };
+  });
+};
+
+ObservedRemoveSet.prototype.merge = function (entries) {
+  for (var i = 0; i < entries.length; i++) {
+    var entry = entries[i];
+    for (var j = 0; j < entry.a.length; j++) {
+      this._add(entry.v, entry.a[j]);
+    }
+
+    this._remove(entry.v, entry.r);
+  }
+  this._values = undefined;
+};
+
+ObservedRemoveSet.prototype.getValue = function () {
+  if (typeof this._values === 'undefined') {
+    this._values = [];
+    for (var key in this._versions) {
+      var versionData = this._versions[key];
+      for (var key in versionData.added) {
+        if (typeof versionData.removed[key] === 'undefined') {
+          this._values.push(versionData.val);
+          continue;
+        }
+      }
+    }
+  }
+  return this._values;
 };
 
 ObservedRemoveSet.prototype._getVersion = function () {
   return this._ident + ':' + this._counter++;
-};
-
-ObservedRemoveSet.prototype.on = function (evt) {
-  if (evt.type === 'add') {
-    this._add(evt.val, evt.version);
-  } else if (evt.type === 'remove') {
-    this._remove(evt.val, evt.versions);
-  }
 };
 
 ObservedRemoveSet.prototype._add = function (val, version) {
@@ -46,36 +77,14 @@ ObservedRemoveSet.prototype._remove = function (val, versions) {
 ObservedRemoveSet.prototype.add = function (val) {
   var version = this._getVersion();
   this._add(val, version);
-  this._recalculateValues();
-  this._emitter({type: 'add', version: version, val: val});
+  this._values = undefined;
 };
 
 ObservedRemoveSet.prototype.remove = function (val) {
   if (!this._versions[val]) return;
   var versions = Object.keys(this._versions[val].added);
   this._remove(val, versions);
-  this._recalculateValues();
-  this._emitter({type: 'remove', versions: versions, val: val});
-};
-
-ObservedRemoveSet.prototype._recalculateValues = function () {
-  this.values = [];
-  for (var key in this._versions) {
-    var versionData = this._versions[key];
-    for (var key in versionData.added) {
-      if (typeof versionData.removed[key] === 'undefined') {
-        this.values.push(versionData.val);
-        continue;
-      }
-    }
-  }
-};
-
-ObservedRemoveSet.prototype.handle = function (events) {
-  for (var i = 0; i < events.length; i++) {
-    this.on(events[i]);
-  }
-  this._recalculateValues();
+  this._values = undefined;
 };
 
 module.exports = ObservedRemoveSet;
