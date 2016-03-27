@@ -55,7 +55,8 @@ describe('ObservedRemoveSet', function() {
     assert.equal(counter2.values.indexOf('jeremy') !== -1, true);
     assert.equal(counter3.values.indexOf('jeremy') !== -1, true);
 
-    // make sure that 3 still sees item from 1 despite 2's removal
+    // apply earlier set 2 removal, ensure that key is still visible due to
+    // second set 1 added (applied before the removal to set 3)
     counter3.handle(counter2Events.slice(0));
     assert.equal(counter3.values.indexOf('jeremy') !== -1, true);
   });
