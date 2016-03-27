@@ -11,17 +11,11 @@ ObservedRemoveSet.prototype._getVersion = function () {
   return this._ident + ':' + this._counter++;
 };
 
-
-// A adds key 1 and sends to B and C
-// B removes key 1 and sends to A, C on 5 second delay
-// A readds key 1 and sends to B and C
-//
-
-ObservedRemoveSet.prototype.on = function (event) {
-  if (event.type === 'add') {
-
-  } else if (event.type === 'remove') {
-
+ObservedRemoveSet.prototype.on = function (evt) {
+  if (evt.type === 'add') {
+    this._add(evt.val, evt.version);
+  } else if (evt.type === 'remove') {
+    this._remove(evt.val, evt.versions);
   }
 };
 
@@ -49,17 +43,19 @@ ObservedRemoveSet.prototype._remove = function (val, versions) {
   }
 }
 
-ObservedRemoveSet.prototype.add = function (val, version) {
-  this._add(val, this._getVersion());
+ObservedRemoveSet.prototype.add = function (val) {
+  var version = this._getVersion();
+  this._add(val, version);
   this._recalculateValues();
-  // emitter({type: 'add', ident: (this._ident + ':' + this._counter), val: val});
+  this._emitter({type: 'add', version: version, val: val});
 };
 
 ObservedRemoveSet.prototype.remove = function (val) {
   if (!this._versions[val]) return;
-  this._remove(val, Object.keys(this._versions[val].added));
+  var versions = Object.keys(this._versions[val].added);
+  this._remove(val, versions);
   this._recalculateValues();
-  // emitter({type: 'remove', versions: [].concat(this._versions[val].added), val: val});
+  this._emitter({type: 'remove', versions: versions, val: val});
 };
 
 ObservedRemoveSet.prototype._recalculateValues = function () {
