@@ -31,7 +31,8 @@ LastWriterWinsSet.prototype.merge = function (state) {
       this._valuesMap[item.val] = {
         val: item.val,
         flag: item.flag,
-        timestamp: item.timestamp
+        timestamp: item.timestamp,
+        ident: item.ident
       };
     }
   }
