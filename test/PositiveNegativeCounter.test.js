@@ -1,14 +1,12 @@
 var assert = require('assert');
 
-var GCounter = require('../examples/GCounter');
+var PositiveNegativeCounter = require('../examples/PositiveNegativeCounter');
 var Site = require('../lib/Site');
 
-describe('GCounter', function() {
-  var counter1, counter2;
-
+describe('PositiveNegativeCounter', function() {
   beforeEach(function() {
-    counter1 = new GCounter('a');
-    counter2 = new GCounter('b');
+    counter1 = new PositiveNegativeCounter('a');
+    counter2 = new PositiveNegativeCounter('b');
   });
 
   it('should increment single', function () {
@@ -29,9 +27,16 @@ describe('GCounter', function() {
     counter2.merge([counter1.getState()]);
     assert.equal(counter2.getValue(), 7);
 
-    counter2.increment(2);
+    counter2.decrement(2);
 
     counter1.merge([counter2.getState()]);
-    assert.equal(counter1.getValue(), 9);
+    assert.equal(counter1.getValue(), 5);
+
+    counter1.decrement(2);
+    counter1.decrement(1);
+    counter2.merge([counter1.getState()]);
+
+    assert.equal(counter2.getValue(), 2);
+    assert.equal(counter1.getValue(), 2);
   });
 });

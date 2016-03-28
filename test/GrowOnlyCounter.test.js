@@ -1,12 +1,14 @@
 var assert = require('assert');
 
-var PNCounter = require('../examples/PNCounter');
+var GrowOnlyCounter = require('../examples/GrowOnlyCounter');
 var Site = require('../lib/Site');
 
-describe('PNCounter', function() {
+describe('GrowOnlyCounter', function() {
+  var counter1, counter2;
+
   beforeEach(function() {
-    counter1 = new PNCounter('a');
-    counter2 = new PNCounter('b');
+    counter1 = new GrowOnlyCounter('a');
+    counter2 = new GrowOnlyCounter('b');
   });
 
   it('should increment single', function () {
@@ -27,16 +29,9 @@ describe('PNCounter', function() {
     counter2.merge([counter1.getState()]);
     assert.equal(counter2.getValue(), 7);
 
-    counter2.decrement(2);
+    counter2.increment(2);
 
     counter1.merge([counter2.getState()]);
-    assert.equal(counter1.getValue(), 5);
-
-    counter1.decrement(2);
-    counter1.decrement(1);
-    counter2.merge([counter1.getState()]);
-
-    assert.equal(counter2.getValue(), 2);
-    assert.equal(counter1.getValue(), 2);
+    assert.equal(counter1.getValue(), 9);
   });
 });

@@ -1,4 +1,4 @@
-var PNCounter = function(ident) {
+var PositiveNegativeCounter = function(ident) {
   this._ident = ident;
   this._values = {};
 
@@ -7,13 +7,13 @@ var PNCounter = function(ident) {
   this._value = undefined;
 };
 
-PNCounter.prototype.getState = function () {
+PositiveNegativeCounter.prototype.getState = function () {
   var value = this._values[this._ident];
 
   return {ident: this._ident, p: value.p, n: value.n};
 };
 
-PNCounter.prototype.getValue = function () {
+PositiveNegativeCounter.prototype.getValue = function () {
   if (typeof this._value === 'undefined') {
     var value = 0;
     for (var key in this._values) {
@@ -24,17 +24,17 @@ PNCounter.prototype.getValue = function () {
   return this._value;
 };
 
-PNCounter.prototype.increment = function (amount) {
+PositiveNegativeCounter.prototype.increment = function (amount) {
   this._values[this._ident].p += amount;
   this._value = undefined;
 };
 
-PNCounter.prototype.decrement = function (amount) {
+PositiveNegativeCounter.prototype.decrement = function (amount) {
   this._values[this._ident].n += amount;
   this._value = undefined;
 };
 
-PNCounter.prototype.merge = function (values) {
+PositiveNegativeCounter.prototype.merge = function (values) {
   for (var i = 0; i < values.length; i++) {
     var value = values[i];
     this._values[value.ident] = {p: value.p, n: value.n};
@@ -42,4 +42,4 @@ PNCounter.prototype.merge = function (values) {
   this._value = undefined;
 };
 
-module.exports = PNCounter;
+module.exports = PositiveNegativeCounter;
