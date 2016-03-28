@@ -49,4 +49,25 @@ describe('LastWriterWinsSet', function() {
     assert.equal(counter2.getValue().indexOf('testing') !== -1, true);
     assert.equal(counter3.getValue().indexOf('testing') !== -1, true);
   });
+
+  it("should merge deterministically", function() {
+    counter1 = new LastWriterWinsSet('a');
+    counter2 = new LastWriterWinsSet('b');
+
+    counter1.add('jeremy');
+    counter2.merge(counter1.getState());
+
+    counter1.remove('jeremy');
+    counter1.add('jeremy');
+    counter2.remove('jeremy');
+
+    var state1 = counter1.getState();
+    var state2 = counter2.getState();
+    state1[0].timestamp = 1;
+    state2[0].timestamp = 2;
+
+    counter1.merge(state2);
+    counter2.merge(state1);
+    assert.equal(counter1.getValue().indexOf('jeremy'), counter2.getValue().indexOf('jeremy'));
+  });
 });

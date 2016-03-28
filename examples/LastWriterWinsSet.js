@@ -13,7 +13,8 @@ LastWriterWinsSet.prototype.getState = function () {
     state.push({
       val: item.val,
       flag: item.flag,
-      timestamp: item.timestamp
+      timestamp: item.timestamp,
+      ident: item.ident
     });
   }
 
@@ -23,8 +24,10 @@ LastWriterWinsSet.prototype.getState = function () {
 LastWriterWinsSet.prototype.merge = function (state) {
   for (var i = 0; i < state.length; i++) {
     var item = state[i];
-    if (typeof this._valuesMap[item.val] === 'undefined' ||
-        this._valuesMap[item.val].timestamp <= item.timestamp) {
+    var currentItem = this._valuesMap[item.val];
+    if (typeof currentItem === 'undefined' ||
+        currentItem.timestamp < item.timestamp ||
+        currentItem.ident > item.ident) {
       this._valuesMap[item.val] = {
         val: item.val,
         flag: item.flag,
@@ -52,7 +55,8 @@ LastWriterWinsSet.prototype.add = function (val) {
   this._valuesMap[val] = {
     val: val,
     flag: true,
-    timestamp: Date.now()
+    timestamp: Date.now(),
+    ident: this._ident
   };
   this._values = undefined;
 };
@@ -61,7 +65,8 @@ LastWriterWinsSet.prototype.remove = function (val) {
   this._valuesMap[val] = {
     val: val,
     flag: false,
-    timestamp: Date.now()
+    timestamp: Date.now(),
+    ident: this._ident
   };
   this._values = undefined;
 };
