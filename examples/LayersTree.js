@@ -47,18 +47,26 @@ LayersTree.prototype.merge = function (state) {
   for (var i = 0; i < state.length; i++) {
     var layer = state[i];
     var currentLayer = this._layerData[layer.id];
+
+    // new layer added
+    //
+    // layer was remotely tombstoned
+    //
+    // layer was locally tombstoned
+    //
+    // layer has changes in both places
+
     if (typeof currentLayer === 'undefined') {
+      // new layer was added
       this.layerData[layer.id] = layer;
+
+    } else if (currentLayer.tombstone !== layer.tombstone) {
+      
+
     } else if (currentLayer.timestamp < layer.timestamp ||
         currentLayer.ident > layer.ident) {
-      if (layer.tombstone === true) {
-        this.layerData[layer.id] = layer;
-      } else if (currentLayer.tombstone === true) {
-        currentLayer.tombstone = true;
-        currentLayer.timestamp = layer.timestamp;
-      } else {
-        this.layerData[layer.id] = layer
-      }
+      // layer has changes in both places, take most recent
+      this.layerData[layer.id] = layer
     }
   }
   this._value = undefined;
