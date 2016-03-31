@@ -1,6 +1,6 @@
 {
-  "name": "crdt",
-  "private": "true",
+  "name": "conflictfree",
+  "version": "0.0.1",
   "dependencies": {
   },
   "devDependencies": {

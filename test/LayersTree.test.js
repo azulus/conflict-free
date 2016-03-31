@@ -14,11 +14,11 @@ describe('LayersTree', function() {
     tree1.add('ab', 'a', 5);
     tree1.add('aba', 'ab', 5);
 
-    console.log(tree1.getState());
+    // console.log(tree1.getState());
 
     tree1.remove('aa');
 
-    console.log(tree1.getState());
+    // console.log(tree1.getState());
 
     // counter1.add('jeremy');
     // assert.equal(counter1.getValue().indexOf('jeremy') !== -1, true);
