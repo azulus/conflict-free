@@ -63,11 +63,16 @@ describe('LastWriterWinsSet', function() {
 
     var state1 = counter1.getState();
     var state2 = counter2.getState();
-    state1[0].timestamp = 1;
-    state2[0].timestamp = 2;
+    var now = Date.now();
+    state1[0].timestamp = now + 1;
+    state2[0].timestamp = now + 2;
 
-    counter1.merge(state2);
-    counter2.merge(state1);
+    // adjust state timestamps
+    counter1.merge(state1);
+    counter2.merge(state2);
+
+    counter1.merge(counter2.getState());
+    counter2.merge(counter1.getState());
     assert.equal(counter1.getValue().indexOf('jeremy'), counter2.getValue().indexOf('jeremy'));
   });
 });

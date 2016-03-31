@@ -27,7 +27,7 @@ LastWriterWinsSet.prototype.merge = function (state) {
     var currentItem = this._valuesMap[item.val];
     if (typeof currentItem === 'undefined' ||
         currentItem.timestamp < item.timestamp ||
-        currentItem.ident > item.ident) {
+        (currentItem.ident > item.ident && currentItem.timestamp === item.timestamp)) {
       this._valuesMap[item.val] = {
         val: item.val,
         flag: item.flag,
