@@ -5,7 +5,7 @@ var LayersTree = require('../lib/LayersTree');
 var ID_LENGTH = 4;
 
 describe('LayersTree', function() {
-  var tree1, tree2, tree3;
+  var tree1, tree2, tree3, value;
 
   it("should contruct tree", function() {
     tree1 = new LayersTree('a');
@@ -25,5 +25,24 @@ describe('LayersTree', function() {
     tree1.add('abac', 'aba', {name: 'Sitting Room'});
     tree1.add('abab', 'aba', {name: 'Kitchen'}, null, 'abac');
     tree1.add('abaa', 'aba', {name: 'Entryway'}, null, 'abab');
+
+    value = tree1.getValue();
+    assert.equal(value[0].data.name, 'Root Layer');
+
+    assert.equal(value[0].children[0].data.name, 'Backgrounds');
+    assert.equal(value[0].children[1].data.name, 'Mapping');
+    assert.equal(value[0].children[2].data.name, 'Details');
+
+    assert.equal(value[0].children[0].children[0].data.name, 'Circles');
+    assert.equal(value[0].children[0].children[1].data.name, 'Logo');
+    assert.equal(value[0].children[0].children[2].data.name, 'Text');
+
+    assert.equal(value[0].children[1].children[0].data.name, 'Building');
+
+    assert.equal(value[0].children[1].children[0].children[0].data.name, 'Entryway');
+    assert.equal(value[0].children[1].children[0].children[1].data.name, 'Kitchen');
+    assert.equal(value[0].children[1].children[0].children[2].data.name, 'Sitting Room');
+
+    assert.equal(value[0].children[2].children[0].data.name, 'Items');
   });
 });
