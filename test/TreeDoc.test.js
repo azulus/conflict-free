@@ -1,7 +1,6 @@
 var assert = require('assert');
 
-var Site = require('../lib/Site');
-var TreeDoc = require('../examples/TreeDoc');
+var TreeDoc = require('../lib/TreeDoc');
 
 
 describe('TreeDoc', function() {

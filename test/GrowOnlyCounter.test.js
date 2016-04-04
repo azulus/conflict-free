@@ -1,7 +1,6 @@
 var assert = require('assert');
 
-var GrowOnlyCounter = require('../examples/GrowOnlyCounter');
-var Site = require('../lib/Site');
+var GrowOnlyCounter = require('../lib/GrowOnlyCounter');
 
 describe('GrowOnlyCounter', function() {
   var counter1, counter2;

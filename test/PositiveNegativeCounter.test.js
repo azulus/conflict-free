@@ -1,7 +1,6 @@
 var assert = require('assert');
 
-var PositiveNegativeCounter = require('../examples/PositiveNegativeCounter');
-var Site = require('../lib/Site');
+var PositiveNegativeCounter = require('../lib/PositiveNegativeCounter');
 
 describe('PositiveNegativeCounter', function() {
   beforeEach(function() {

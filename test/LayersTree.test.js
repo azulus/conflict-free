@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var LayersTree = require('../examples/LayersTree');
+var LayersTree = require('../lib/LayersTree');
 
 describe('LayersTree', function() {
   var tree1, tree2, tree3;

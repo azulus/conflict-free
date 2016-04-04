@@ -1,7 +1,6 @@
 var assert = require('assert');
 
-var ObservedRemoveSet = require('../examples/ObservedRemoveSet');
-var Site = require('../lib/Site');
+var ObservedRemoveSet = require('../lib/ObservedRemoveSet');
 
 describe('ObservedRemoveSet', function() {
   var counter1, counter2, counter3;

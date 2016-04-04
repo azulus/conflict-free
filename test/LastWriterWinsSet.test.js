@@ -1,7 +1,6 @@
 var assert = require('assert');
 
-var LastWriterWinsSet = require('../examples/LastWriterWinsSet');
-var Site = require('../lib/Site');
+var LastWriterWinsSet = require('../lib/LastWriterWinsSet');
 
 describe('LastWriterWinsSet', function() {
   var counter1, counter2, counter3;

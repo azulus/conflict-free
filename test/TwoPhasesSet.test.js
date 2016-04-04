@@ -1,7 +1,6 @@
 var assert = require('assert');
 
-var TwoPhasesSet = require('../examples/TwoPhasesSet');
-var Site = require('../lib/Site');
+var TwoPhasesSet = require('../lib/TwoPhasesSet');
 
 describe('TwoPhasesSet', function() {
   var counter1, counter2, counter3;
