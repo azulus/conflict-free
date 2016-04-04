@@ -3,50 +3,50 @@ var assert = require('assert');
 var ObservedRemoveSet = require('../lib/ObservedRemoveSet');
 
 describe('ObservedRemoveSet', function() {
-  var counter1, counter2, counter3;
+  var set1, set2, set3;
 
   it("should add and remove", function() {
-    counter1 = new ObservedRemoveSet('a');
+    set1 = new ObservedRemoveSet('a');
 
-    counter1.add('jeremy');
-    assert.equal(counter1.getValue().indexOf('jeremy') !== -1, true);
+    set1.add('jeremy');
+    assert.equal(set1.getValue().indexOf('jeremy') !== -1, true);
 
-    counter1.add('jeremy');
-    counter1.remove('jeremy');
-    assert.equal(counter1.getValue().indexOf('jeremy') === -1, true);
+    set1.add('jeremy');
+    set1.remove('jeremy');
+    assert.equal(set1.getValue().indexOf('jeremy') === -1, true);
   });
 
   it("should resolve merges correctly", function() {
-    counter1 = new ObservedRemoveSet('a');
-    counter2 = new ObservedRemoveSet('b');
-    counter3 = new ObservedRemoveSet('c');
+    set1 = new ObservedRemoveSet('a');
+    set2 = new ObservedRemoveSet('b');
+    set3 = new ObservedRemoveSet('c');
 
     // add to set 1, tell sets 2 and 3
-    counter1.add('jeremy');
-    counter2.merge(counter1.getState());
-    counter3.merge(counter1.getState());
-    assert.equal(counter1.getValue().indexOf('jeremy') !== -1, true);
-    assert.equal(counter2.getValue().indexOf('jeremy') !== -1, true);
-    assert.equal(counter3.getValue().indexOf('jeremy') !== -1, true);
+    set1.add('jeremy');
+    set2.merge(set1.getState());
+    set3.merge(set1.getState());
+    assert.equal(set1.getValue().indexOf('jeremy') !== -1, true);
+    assert.equal(set2.getValue().indexOf('jeremy') !== -1, true);
+    assert.equal(set3.getValue().indexOf('jeremy') !== -1, true);
 
     // remove from set 2, only tell set 1 initially
-    counter2.remove('jeremy');
-    counter1.merge(counter2.getState());
-    assert.equal(counter1.getValue().indexOf('jeremy') === -1, true);
-    assert.equal(counter2.getValue().indexOf('jeremy') === -1, true);
-    assert.equal(counter3.getValue().indexOf('jeremy') !== -1, true);
+    set2.remove('jeremy');
+    set1.merge(set2.getState());
+    assert.equal(set1.getValue().indexOf('jeremy') === -1, true);
+    assert.equal(set2.getValue().indexOf('jeremy') === -1, true);
+    assert.equal(set3.getValue().indexOf('jeremy') !== -1, true);
 
     // re-add from set 1, tell sets 2 and 3
-    counter1.add('jeremy');
-    counter2.merge(counter1.getState());
-    counter3.merge(counter1.getState());
-    assert.equal(counter1.getValue().indexOf('jeremy') !== -1, true);
-    assert.equal(counter2.getValue().indexOf('jeremy') !== -1, true);
-    assert.equal(counter3.getValue().indexOf('jeremy') !== -1, true);
+    set1.add('jeremy');
+    set2.merge(set1.getState());
+    set3.merge(set1.getState());
+    assert.equal(set1.getValue().indexOf('jeremy') !== -1, true);
+    assert.equal(set2.getValue().indexOf('jeremy') !== -1, true);
+    assert.equal(set3.getValue().indexOf('jeremy') !== -1, true);
 
     // apply earlier set 2 removal, ensure that key is still visible due to
     // second set 1 added (applied before the removal to set 3)
-    counter3.merge(counter2.getState());
-    assert.equal(counter3.getValue().indexOf('jeremy') !== -1, true);
+    set3.merge(set2.getState());
+    assert.equal(set3.getValue().indexOf('jeremy') !== -1, true);
   });
 });

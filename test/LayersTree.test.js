@@ -1,5 +1,6 @@
 var assert = require('assert');
 
+var IdGenerator = require('../lib/IdGenerator');
 var LayersTree = require('../lib/LayersTree');
 
 describe('LayersTree', function() {
@@ -17,14 +18,5 @@ describe('LayersTree', function() {
     // console.log(tree1.getState());
 
     tree1.remove('aa');
-
-    // console.log(tree1.getState());
-
-    // counter1.add('jeremy');
-    // assert.equal(counter1.getValue().indexOf('jeremy') !== -1, true);
-    //
-    // counter1.add('testing');
-    // assert.equal(counter1.getValue().indexOf('jeremy') !== -1, true);
-    // assert.equal(counter1.getValue().indexOf('testing') !== -1, true);
   });
 });

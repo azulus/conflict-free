@@ -3,75 +3,75 @@ var assert = require('assert');
 var LastWriterWinsSet = require('../lib/LastWriterWinsSet');
 
 describe('LastWriterWinsSet', function() {
-  var counter1, counter2, counter3;
+  var set1, set2, set3;
 
   it("should add and remove", function() {
-    counter1 = new LastWriterWinsSet('a');
+    set1 = new LastWriterWinsSet('a');
 
-    counter1.add('jeremy');
-    assert.equal(counter1.getValue().indexOf('jeremy') !== -1, true);
+    set1.add('jeremy');
+    assert.equal(set1.getValue().indexOf('jeremy') !== -1, true);
 
-    counter1.remove('jeremy');
-    assert.equal(counter1.getValue().indexOf('jeremy') === -1, true);
+    set1.remove('jeremy');
+    assert.equal(set1.getValue().indexOf('jeremy') === -1, true);
 
-    counter1.add('jeremy');
-    assert.equal(counter1.getValue().indexOf('jeremy') !== -1, true);
+    set1.add('jeremy');
+    assert.equal(set1.getValue().indexOf('jeremy') !== -1, true);
   });
 
   it("should resolve merges correctly", function() {
-    counter1 = new LastWriterWinsSet('a');
-    counter2 = new LastWriterWinsSet('b');
-    counter3 = new LastWriterWinsSet('c');
+    set1 = new LastWriterWinsSet('a');
+    set2 = new LastWriterWinsSet('b');
+    set3 = new LastWriterWinsSet('c');
 
     // add to set 1, tell sets 2 and 3
-    counter1.add('jeremy');
-    counter2.merge(counter1.getState());
-    counter3.merge(counter1.getState());
-    assert.equal(counter1.getValue().indexOf('jeremy') !== -1, true);
-    assert.equal(counter2.getValue().indexOf('jeremy') !== -1, true);
-    assert.equal(counter3.getValue().indexOf('jeremy') !== -1, true);
+    set1.add('jeremy');
+    set2.merge(set1.getState());
+    set3.merge(set1.getState());
+    assert.equal(set1.getValue().indexOf('jeremy') !== -1, true);
+    assert.equal(set2.getValue().indexOf('jeremy') !== -1, true);
+    assert.equal(set3.getValue().indexOf('jeremy') !== -1, true);
 
     // add to set 1, tell sets 2 and 3
-    counter1.add('testing');
-    counter2.merge(counter1.getState());
-    counter1.remove('testing');
-    counter2.remove('testing');
-    counter1.add('testing');
-    assert.equal(counter1.getValue().indexOf('testing') !== -1, true);
-    assert.equal(counter2.getValue().indexOf('testing') === -1, true);
-    assert.equal(counter3.getValue().indexOf('testing') === -1, true);
+    set1.add('testing');
+    set2.merge(set1.getState());
+    set1.remove('testing');
+    set2.remove('testing');
+    set1.add('testing');
+    assert.equal(set1.getValue().indexOf('testing') !== -1, true);
+    assert.equal(set2.getValue().indexOf('testing') === -1, true);
+    assert.equal(set3.getValue().indexOf('testing') === -1, true);
 
-    // merging counter 1 back into 2 and 3
-    counter2.merge(counter1.getState());
-    counter3.merge(counter1.getState());
-    assert.equal(counter1.getValue().indexOf('testing') !== -1, true);
-    assert.equal(counter2.getValue().indexOf('testing') !== -1, true);
-    assert.equal(counter3.getValue().indexOf('testing') !== -1, true);
+    // merging set 1 back into 2 and 3
+    set2.merge(set1.getState());
+    set3.merge(set1.getState());
+    assert.equal(set1.getValue().indexOf('testing') !== -1, true);
+    assert.equal(set2.getValue().indexOf('testing') !== -1, true);
+    assert.equal(set3.getValue().indexOf('testing') !== -1, true);
   });
 
   it("should merge deterministically", function() {
-    counter1 = new LastWriterWinsSet('a');
-    counter2 = new LastWriterWinsSet('b');
+    set1 = new LastWriterWinsSet('a');
+    set2 = new LastWriterWinsSet('b');
 
-    counter1.add('jeremy');
-    counter2.merge(counter1.getState());
+    set1.add('jeremy');
+    set2.merge(set1.getState());
 
-    counter1.remove('jeremy');
-    counter1.add('jeremy');
-    counter2.remove('jeremy');
+    set1.remove('jeremy');
+    set1.add('jeremy');
+    set2.remove('jeremy');
 
-    var state1 = counter1.getState();
-    var state2 = counter2.getState();
+    var state1 = set1.getState();
+    var state2 = set2.getState();
     var now = Date.now();
     state1[0].timestamp = now + 1;
     state2[0].timestamp = now + 2;
 
     // adjust state timestamps
-    counter1.merge(state1);
-    counter2.merge(state2);
+    set1.merge(state1);
+    set2.merge(state2);
 
-    counter1.merge(counter2.getState());
-    counter2.merge(counter1.getState());
-    assert.equal(counter1.getValue().indexOf('jeremy'), counter2.getValue().indexOf('jeremy'));
+    set1.merge(set2.getState());
+    set2.merge(set1.getState());
+    assert.equal(set1.getValue().indexOf('jeremy'), set2.getValue().indexOf('jeremy'));
   });
 });
