@@ -2,6 +2,14 @@ var assert = require('assert');
 
 var LastWriterWinsMap = require('../lib/LastWriterWinsMap');
 
+var delay = function (ms) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function() {
+      resolve();
+    }, ms);
+  });
+}
+
 describe('LastWriterWinsMap', function() {
   var map1, map2, map3;
 
@@ -14,8 +22,39 @@ describe('LastWriterWinsMap', function() {
     map1.remove('jeremy');
     assert.equal(typeof map1.getValue()['jeremy'], 'undefined');
 
-    map1.add('jeremy', {name: 'Jeremy2'});
-    assert.equal(map1.getValue()['jeremy'].name === 'Jeremy2', true);
+    map1.add('jeremy', {name: 'Joe'});
+    assert.equal(map1.getValue()['jeremy'].name === 'Joe', true);
+  });
+
+  it("should reuse data structure where possible", function() {
+    map1 = new LastWriterWinsMap('a');
+    map2 = new LastWriterWinsMap('b');
+
+    var value1, value2, value3;
+
+    var obj1 = {name: 'Jeremy'};
+    var obj2 = {name: 'Joe'};
+
+    map1.add('jeremy', obj1);
+    value1 = map1.getValue();
+    map2.merge(map1.getState());
+    map2.add('joe', obj2);
+
+    return delay(1)
+    .then(function() {
+      map1.add('jeremy', obj1);
+      assert.equal(map1.getValue(), value1);
+      map1.merge(map2.getState());
+      value2 = map1.getValue();
+      assert.notEqual(value2, value1);
+      return delay(1);
+    })
+    .then(function() {
+      map1.merge(map2.getState());
+      value3 = map1.getValue();
+      map1.add('joe', obj2);
+      assert.equal(value3, map1.getValue());
+    });
   });
 
   it("should resolve merges correctly", function() {
