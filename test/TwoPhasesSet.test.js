@@ -18,6 +18,33 @@ describe('TwoPhasesSet', function() {
     assert.equal(set1.getValue().indexOf('jeremy') === -1, true);
   });
 
+  it("should reuse data structure where possible", function() {
+    var value1, value2, value3;
+
+    set1 = new TwoPhasesSet('a');
+    set2 = new TwoPhasesSet('b');
+
+    set1.add('a');
+    var value1 = set1.getValue();
+
+    set2.add('a');
+    set1.merge(set2.getState());
+    var value2 = set1.getValue();
+    assert.equal(value1, value2);
+
+    set1.add('b');
+    value3 = set1.getValue();
+    assert.notEqual(value1, value3);
+    assert.notEqual(value2, value3);
+    assert.equal(value1, value2);
+
+    set1.remove('b');
+    value3 = set1.getValue();
+    assert.notEqual(value1, value3);
+    assert.notEqual(value2, value3);
+    assert.equal(value1, value2);
+  });
+
   it("should resolve merges correctly", function() {
     set1 = new TwoPhasesSet('a');
     set2 = new TwoPhasesSet('b');
