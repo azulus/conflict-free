@@ -14,7 +14,7 @@ var delay = function (ms) {
 
 describe('LayersTree', function() {
   var tree1, tree2, tree3, value;
-  
+
   it("should contruct tree", function() {
     tree1 = new LayersTree('a');
 
@@ -81,12 +81,12 @@ describe('LayersTree', function() {
     assert.equal(value[0].children[1].id, 'ac');
   });
 
-  it("should resolve merges correctly", function(done) {
+  it("should resolve merges correctly", function() {
     tree1 = new LayersTree('a');
     tree2 = new LayersTree('b');
     tree3 = new LayersTree('c');
 
-    delay(0)
+    return delay(0)
     .then(function () {
       // initial setup
       tree1.add('a', null, {name: 'Layer A'});
@@ -131,6 +131,62 @@ describe('LayersTree', function() {
       assert.equal(value1[1].children.length, 1);
       assert.equal(value1[1].children[0].id, 'aa');
     })
-    .then(done);
+  });
+
+  it("should untombstone after child merge", function() {
+    tree1 = new LayersTree('a');
+    tree2 = new LayersTree('b');
+
+    return delay(0)
+    .then(function () {
+      // initial setup
+      tree1.add('a', null, {name: 'Layer A'});
+      tree1.add('aa', 'a', {name: 'Child Layer'});
+      tree2.merge(tree1.getState());
+      return delay(2);
+    })
+    .then(function () {
+      tree1.add('aaa', 'aa', {name: 'Child Child Layer'});
+      return delay(2);
+    })
+    .then(function () {
+      tree2.remove('aa');
+      return delay(2);
+    })
+    .then(function () {
+      tree1.merge(tree2.getState());
+      tree2.merge(tree1.getState());
+      return delay(2);
+    })
+    .then(function () {
+      var value1 = tree1.getValue();
+      var value2 = tree2.getValue();
+
+      assert.equal(JSON.stringify(value1), JSON.stringify(value2));
+
+      assert.equal(value1.length, 1);
+      assert.equal(value1[0].id, 'a');
+      assert.equal(value1[0].children.length, 1);
+      assert.equal(value1[0].children[0].id, 'aa');
+      assert.equal(value1[0].children[0].children.length, 1);
+      assert.equal(value1[0].children[0].children[0].id, 'aaa');
+      return delay(2);
+    })
+    .then(function () {
+      tree1.remove('aaa');
+      tree2.merge(tree1.getState());
+
+      var value1 = tree1.getValue();
+      var value2 = tree2.getValue();
+
+      assert.equal(JSON.stringify(value1), JSON.stringify(value2));
+
+      assert.equal(value1.length, 1);
+      assert.equal(value1[0].id, 'a');
+      assert.equal(value1[0].children.length, 1);
+      assert.equal(value1[0].children[0].id, 'aa');
+
+      return delay(2);
+    });
   });
 });
