@@ -264,6 +264,71 @@ describe('LayersTree', function() {
     });
   });
 
+  it("should allow partial state", function() {
+    var now = Date.now() - 1;
+    tree1 = new LayersTree('a');
+    tree2 = new LayersTree('b');
+
+    var tree1Timestamp = Date.now() - 1;
+    var tree2Timestamp = Date.now() - 1;
+
+    return delay(0)
+    .then(function () {
+      // initial setup
+      tree1.add('a', null, {name: 'Layer A'});
+      tree1.add('aa', 'a', {name: 'Child Layer'});
+      tree2.merge(tree1.getStateSince(tree2Timestamp));
+      tree2Timestamp = Date.now();
+      return delay(2);
+    })
+    .then(function () {
+      tree1.add('aaa', 'aa', {name: 'Child Child Layer'});
+      return delay(2);
+    })
+    .then(function () {
+      tree2.remove('aa');
+      return delay(2);
+    })
+    .then(function () {
+      tree1.merge(tree2.getStateSince(tree1Timestamp));
+      tree1Timestamp = Date.now();
+      tree2.merge(tree1.getStateSince(tree2Timestamp));
+      tree2Timestamp = Date.now();
+      return delay(2);
+    })
+    .then(function () {
+      var value1 = tree1.getValue();
+      var value2 = tree2.getValue();
+
+      assert.equal(JSON.stringify(value1), JSON.stringify(value2));
+
+      assert.equal(value1.length, 1);
+      assert.equal(value1[0].id, 'a');
+      assert.equal(value1[0].children.length, 1);
+      assert.equal(value1[0].children[0].id, 'aa');
+      assert.equal(value1[0].children[0].children.length, 1);
+      assert.equal(value1[0].children[0].children[0].id, 'aaa');
+      return delay(2);
+    })
+    .then(function () {
+      tree1.remove('aaa');
+      tree2.merge(tree1.getStateSince(tree2Timestamp));
+      tree2Timestamp = Date.now();
+
+      var value1 = tree1.getValue();
+      var value2 = tree2.getValue();
+
+      assert.equal(JSON.stringify(value1), JSON.stringify(value2));
+
+      assert.equal(value1.length, 1);
+      assert.equal(value1[0].id, 'a');
+      assert.equal(value1[0].children.length, 1);
+      assert.equal(value1[0].children[0].id, 'aa');
+
+      return delay(2);
+    });
+  });
+
   it("should resolve cycles", function() {
     tree1 = new LayersTree('a');
     tree2 = new LayersTree('b');

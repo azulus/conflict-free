@@ -2,7 +2,7 @@ var assert = require('assert');
 
 var IdGenerator = require('../lib/IdGenerator');
 
-var EXPECTED_ID_PATTERN = /^(?:[a-zA-Z0-9\:\;]+(?:\.[a-z0-9\#]*)\.*?)(?:\/[a-zA-Z0-9\:\;]+(?:\.[a-z0-9\#]*)?\.*)*\/$/;
+var EXPECTED_ID_PATTERN = /^(?:[a-zA-Z0-9\:\;]+(?:\.+[a-z0-9\#]*)\.*?)(?:\/[a-zA-Z0-9\:\;]+(?:\.+[a-z0-9\#]*)?\.*)*\/$/;
 var TEST_ITERATIONS = 100;
 var ID_LENGTH = 4;
 
