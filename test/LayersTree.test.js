@@ -81,6 +81,51 @@ describe('LayersTree', function() {
     assert.equal(value[0].children[1].id, 'ac');
   });
 
+  it("should sort root nodes", function() {
+    tree1 = new LayersTree('a');
+
+    tree1.add('a', null, {name: 'A'});
+    tree1.add('w', null, {name: 'W'}, 'a');
+    tree1.add('g', null, {name: 'G'}, 'a', 'w');
+    tree1.add('q', null, {name: 'Q'}, 'g', 'w');
+    tree1.add('r', null, {name: 'R'}, 'q', 'w');
+    tree1.add('e', null, {name: 'E'}, 'a', 'g');
+    tree1.add('b', null, {name: 'B'}, 'a', 'e');
+    tree1.add('z', null, {name: 'Z'}, 'w');
+
+    var value = tree1.getValue();
+    assert.equal(value.length, 8);
+    assert.equal(value[0].id, 'a');
+    assert.equal(value[1].id, 'b');
+    assert.equal(value[2].id, 'e');
+    assert.equal(value[3].id, 'g');
+    assert.equal(value[4].id, 'q');
+    assert.equal(value[5].id, 'r');
+    assert.equal(value[6].id, 'w');
+    assert.equal(value[7].id, 'z');
+  });
+
+  it("should reuse data structures where possible", function() {
+    tree1 = new LayersTree('a');
+    tree2 = new LayersTree('b');
+
+    tree1.add('a', null, {name: 'Layer A'});
+    tree1.add('aa', 'a', {name: 'Layer AA'});
+    tree1.add('ab', 'a', {name: 'Layer AB'}, 'aa');
+    tree1.add('b', '', {name: 'Layer B'}, 'a')
+    tree1.add('ba', 'b', {name: 'Layer B'}, 'a');
+    tree1.add('bb', 'b', {name: 'Layer BA'}, 'ba');
+
+
+
+    return delay(0)
+    .then(function () {
+      // initial setup
+
+      return delay(2);
+    })
+  });
+
   it("should resolve merges correctly", function() {
     tree1 = new LayersTree('a');
     tree2 = new LayersTree('b');
