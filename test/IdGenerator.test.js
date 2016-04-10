@@ -147,7 +147,7 @@ describe('IdGenerator', function() {
     }
   });
 
-  it("should insert a bunch of ids without a problem", function() {
+  it("should insert a bunch of 1-character ids without a problem", function() {
     var sites = ['s0', 's1', 's2', 's3'];
     var ids = [
       IdGenerator.generate(sites[Math.floor(Math.random() * sites.length)], 1),
@@ -168,6 +168,36 @@ describe('IdGenerator', function() {
         var minId = compareVal === -1 ? id1 : id2;
         var maxId = compareVal === -1 ? id2 : id1;
         var newId = IdGenerator.generate(randomSite, 1, minId, maxId);
+        var newIdString = IdGenerator.stringify(newId);
+        assert.equal(Array.isArray(newIdString.match(EXPECTED_ID_PATTERN)), true, newIdString + "should match the id pattern");
+        assert.equal(IdGenerator.compare(id1, newId), compareVal, newIdString + " should be between " + IdGenerator.stringify(minId) + " and " + IdGenerator.stringify(maxId));
+        assert.equal(IdGenerator.compare(newId, id2), compareVal, newIdString + " should be between " + IdGenerator.stringify(minId) + " and " + IdGenerator.stringify(maxId));
+        ids.push(newId);
+      }
+    }
+  });
+
+  it("should insert a bunch of 4-character ids without a problem", function() {
+    var sites = ['s0', 's1', 's2', 's3'];
+    var ids = [
+      IdGenerator.generate(sites[Math.floor(Math.random() * sites.length)], 4),
+      IdGenerator.generate(sites[Math.floor(Math.random() * sites.length)], 4)
+    ];
+    var comparator = IdGenerator.compare.bind(IdGenerator);
+
+    for (var i = 0; i < 20000; i++) {
+      var id1 = ids[Math.floor(Math.random() * ids.length)];
+      var id1String = IdGenerator.stringify(id1);
+      var id2 = ids[Math.floor(Math.random() * ids.length)];
+      var id2String = IdGenerator.stringify(id2);
+      var compareVal = IdGenerator.compare(id1, id2);
+      if (id1String === id2String) {
+        i--;
+      } else {
+        var randomSite = sites[Math.floor(Math.random() * sites.length)];
+        var minId = compareVal === -1 ? id1 : id2;
+        var maxId = compareVal === -1 ? id2 : id1;
+        var newId = IdGenerator.generate(randomSite, 4, minId, maxId);
         var newIdString = IdGenerator.stringify(newId);
         assert.equal(Array.isArray(newIdString.match(EXPECTED_ID_PATTERN)), true, newIdString + "should match the id pattern");
         assert.equal(IdGenerator.compare(id1, newId), compareVal, newIdString + " should be between " + IdGenerator.stringify(minId) + " and " + IdGenerator.stringify(maxId));
