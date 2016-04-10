@@ -113,10 +113,16 @@ describe('LayersTree', function() {
     tree1.add('aa', 'a', {name: 'Layer AA'});
     tree1.add('ab', 'a', {name: 'Layer AB'}, 'aa');
     tree1.add('b', '', {name: 'Layer B'}, 'a')
-    tree1.add('ba', 'b', {name: 'Layer B'}, 'a');
-    tree1.add('bb', 'b', {name: 'Layer BA'}, 'ba');
+    tree1.add('ba', 'b', {name: 'Layer BA'});
+    tree1.add('bb', 'b', {name: 'Layer BB'}, 'ba');
 
-
+    var value1 = tree1.getValue();
+    var layerA = value1[0];
+    var layerAA = value1[0].children[0];
+    var layerAB = value1[0].children[1];
+    var layerB = value1[1];
+    var layerBA = value1[1].children[0];
+    var layerBB = value1[1].children[1];
 
     return delay(0)
     .then(function () {
