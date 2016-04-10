@@ -264,7 +264,7 @@ describe('LayersTree', function() {
     });
   });
 
-  xit("should resolve cycles", function() {
+  it("should resolve cycles", function() {
     tree1 = new LayersTree('a');
     tree2 = new LayersTree('b');
 
@@ -291,9 +291,10 @@ describe('LayersTree', function() {
 
       assert.equal(JSON.stringify(value1), JSON.stringify(value2));
 
-      assert.equal(value1.length, 2);
-      assert.equal(value1[0].id, 'a');
-      assert.equal(value1[1].id, 'b');
+      assert.equal(value1.length, 1);
+      assert.equal(value1[0].id, 'b');
+      assert.equal(value1[0].children[0].id, 'c');
+      assert.equal(value1[0].children[0].children[0].id, 'a');
     });
   });
 });
