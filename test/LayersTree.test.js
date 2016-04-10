@@ -199,11 +199,12 @@ describe('LayersTree', function() {
       // initial setup
       tree1.add('a', null, {name: 'Layer A'});
       tree1.add('b', null, {name: 'Layer B'});
+      tree1.add('c', 'b', {name: 'Layer C'});
       tree2.merge(tree1.getState());
       return delay(2);
     })
     .then(function () {
-      tree1.move('a', 'b');
+      tree1.move('a', 'c');
       tree2.move('b', 'a');
       return delay(2);
     })
@@ -218,24 +219,7 @@ describe('LayersTree', function() {
 
       assert.equal(value1.length, 2);
       assert.equal(value1[0].id, 'a');
-      assert.equal(value1[1].id, 'a');
-      return delay(2);
-    })
-    .then(function () {
-      tree1.remove('aaa');
-      tree2.merge(tree1.getState());
-
-      var value1 = tree1.getValue();
-      var value2 = tree2.getValue();
-
-      assert.equal(JSON.stringify(value1), JSON.stringify(value2));
-
-      assert.equal(value1.length, 1);
-      assert.equal(value1[0].id, 'a');
-      assert.equal(value1[0].children.length, 1);
-      assert.equal(value1[0].children[0].id, 'aa');
-
-      return delay(2);
+      assert.equal(value1[1].id, 'b');
     });
   });
 });
