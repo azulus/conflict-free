@@ -112,7 +112,7 @@ describe('LayersTree', function() {
     tree1.add('a', null, {name: 'Layer A'});
     tree1.add('aa', 'a', {name: 'Layer AA'});
     tree1.add('ab', 'a', {name: 'Layer AB'}, 'aa');
-    tree1.add('b', '', {name: 'Layer B'}, 'a')
+    tree1.add('b', null, {name: 'Layer B'}, 'a')
     tree1.add('ba', 'b', {name: 'Layer BA'});
     tree1.add('bb', 'b', {name: 'Layer BB'}, 'ba');
 
@@ -124,12 +124,35 @@ describe('LayersTree', function() {
     var layerBA = value1[1].children[0];
     var layerBB = value1[1].children[1];
 
-    return delay(0)
-    .then(function () {
-      // initial setup
+    tree1.add('bba', 'bb', {name: 'Layer BBA'});
+    var value2 = tree1.getValue();
+    assert.equal(layerA, value2[0]);
+    assert.equal(layerAA, value2[0].children[0]);
+    assert.equal(layerAB, value2[0].children[1]);
+    assert.notEqual(layerB, value2[1]);
+    assert.equal(layerBA, value2[1].children[0]);
+    assert.notEqual(layerBB, value2[1].children[1]);
 
+    layerB = value2[1];
+    layerBB = value2[1].children[1];
+
+    return delay(2)
+    .then(function () {
+      tree2.merge(tree1.getState());
+      tree2.add('aaa', 'aa', {name: 'Layer AAA'});
       return delay(2);
     })
+    .then(function () {
+      tree1.merge(tree2.getState());
+      var value3 = tree1.getValue();
+
+      assert.notEqual(layerA, value3[0]);
+      assert.notEqual(layerAA, value3[0].children[0]);
+      assert.equal(layerAB, value3[0].children[1]);
+      assert.equal(layerB, value3[1]);
+      assert.equal(layerBA, value3[1].children[0]);
+      assert.equal(layerBB, value3[1].children[1]);
+    });
   });
 
   it("should resolve merges correctly", function() {
