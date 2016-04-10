@@ -295,6 +295,11 @@ describe('LayersTree', function() {
       assert.equal(value1[0].id, 'b');
       assert.equal(value1[0].children[0].id, 'c');
       assert.equal(value1[0].children[0].children[0].id, 'a');
+
+      assert.equal(value2.length, 1);
+      assert.equal(value2[0].id, 'b');
+      assert.equal(value2[0].children[0].id, 'c');
+      assert.equal(value2[0].children[0].children[0].id, 'a');
     });
   });
 });
