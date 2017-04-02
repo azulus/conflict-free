@@ -50,6 +50,30 @@ describe('IdGenerator', function() {
     }
   });
 
+  it("should not generate ids between undefined and min", function() {
+    var maxId = IdGenerator.getMin(ID_LENGTH);
+    try {
+      var id = IdGenerator.generate('siteA', ID_LENGTH, null, maxId);
+      assert(false);
+    } catch (e) {}
+  });
+
+  it("should not generate ids between max and undefined", function() {
+    var maxId = IdGenerator.getMax(ID_LENGTH);
+    try {
+      var id = IdGenerator.generate('siteA', ID_LENGTH, maxId, null);
+      assert(false);
+    } catch (e) {}
+  });
+
+  it("should not generate ids between identical keys", function() {
+    var maxId = IdGenerator.generate('siteA', ID_LENGTH);
+    try {
+      var id = IdGenerator.generate('siteA', ID_LENGTH, maxId, minId);
+      assert(false);
+    } catch (e) {}
+  });
+
   it("should generate ids between id and undefined", function() {
     var minId = IdGenerator.generate('siteA', ID_LENGTH);
     for (var i = 0; i < TEST_ITERATIONS; i++) {
